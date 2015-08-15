@@ -37,6 +37,10 @@ class Collection implements \Countable, \Iterator
 
 	protected _prefix { get };
 
+	protected _postfix { get };
+
+	protected _postfixMode = 0 { get };
+
 	protected _local = true { get };
 
 	protected _resources = [] { get };
@@ -267,6 +271,24 @@ class Collection implements \Countable, \Iterator
 	public function setPrefix(string! prefix) -> <Collection>
 	{
 		let this->_prefix = prefix;
+		return this;
+	}
+
+	/**
+	 * Sets a common postfix for all the resources
+	 */
+	public function setPostfix(string! postfix) -> <Collection>
+	{
+		let this->_postfix = postfix;
+		return this;
+	}
+
+	/**
+	 * Sets a common postfix mode for all the resources
+	 */
+	public function setPostfixMode(int! postfixMode) -> <Collection>
+	{
+		let this->_postfixMode = postfixMode;
 		return this;
 	}
 

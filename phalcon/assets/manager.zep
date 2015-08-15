@@ -284,6 +284,33 @@ class Manager
 	}
 
 	/**
+	 *	Add postfix to assets path
+	 * @param string path
+	 * @param string postfix
+	 * @param int mode
+	 */
+	private function addPostfix(string path, string postfix, int mode)
+	{
+		var pos;
+		
+		if (mode == 1) {
+			let pos = strpos(path, ".js");
+			if !pos {
+				let pos = strpos(path, ".css");
+			}
+			if !pos {
+				let pos = strpos(path, ".map");
+			}
+			if pos {
+				let path = substr(path, 0, pos) . "." . postfix . substr(path, pos);
+			}
+		} else {
+			let path = path . "?_=" . postfix;
+		}
+		return path;
+	}
+
+	/**
 	 * Traverses a collection calling the callback to generate its HTML
 	 *
 	 * @param Phalcon\Assets\Collection collection
@@ -292,7 +319,7 @@ class Manager
 	 */
 	public function output(<Collection> collection, callback, type)
 	{
-		var output, resources, filters, prefix, sourceBasePath = null,
+		var output, resources, filters, prefix, postfix, postfixMode, sourceBasePath = null,
 			targetBasePath = null, options, collectionSourcePath, completeSourcePath,
 			collectionTargetPath, completeTargetPath, filteredJoinedContent, join,
 			$resource, filterNeeded, local, sourcePath, targetPath, path, prefixedPath,
@@ -317,6 +344,16 @@ class Manager
 		 * Get the collection's prefix
 		 */
 		let prefix = collection->getPrefix();
+
+		/**
+		 * Get the collection's postfix
+		 */
+		let postfix = collection->getPostfix();
+
+		/**
+		 * Get the collection's postfixMode
+		 */
+		let postfixMode = collection->getPostfixMode();
 
 
 		let typeCss = "css";
@@ -485,6 +522,10 @@ class Manager
 					let prefixedPath = path;
 				}
 
+				if postfix {
+					let prefixedPath = this->addPostfix(prefixedPath, postfix, postfixMode);
+				}
+
 				/**
 				 * Gets extra HTML attributes in the resource
 				 */
@@ -594,6 +635,10 @@ class Manager
 					let prefixedPath = path;
 				}
 
+				if postfix {
+					let prefixedPath = this->addPostfix(prefixedPath, postfix, postfixMode);
+				}
+
 				/**
 				 * Gets extra HTML attributes in the resource
 				 */
@@ -653,6 +698,9 @@ class Manager
 					let prefixedPath = targetUri;
 				}
 
+				if postfix {
+					let prefixedPath = this->addPostfix(prefixedPath, postfix, postfixMode);
+				}
 				/**
 				 * Gets extra HTML attributes in the collection
 				 */
